@@ -1,0 +1,12 @@
+.user-panel {
+    background-color: $color-primary;
+
+    &__row {
+        padding: 1.2em;
+        margin: 0;
+    }
+
+    &__heading {
+        padding: 0.25em;
+    }
+}
