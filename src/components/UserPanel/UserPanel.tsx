@@ -46,22 +46,26 @@ class UserPanel extends React.Component<UserPanelProps> {
                             <Icon name="code" />
                             <Header.Content>DevChat</Header.Content>
                         </Header>
+                        <Header
+                            className="user-panel__heading"
+                            as="h4"
+                            inverted
+                        >
+                            <Dropdown
+                                trigger={
+                                    <span>
+                                        <Image
+                                            src={currentUser?.photoURL}
+                                            avatar
+                                            spaced="right"
+                                        />
+                                        {currentUser?.displayName}
+                                    </span>
+                                }
+                                options={this.dropdownOptions()}
+                            />
+                        </Header>
                     </Grid.Row>
-                    <Header className="user-panel__heading" as="h4" inverted>
-                        <Dropdown
-                            trigger={
-                                <span>
-                                    <Image
-                                        src={currentUser?.photoURL}
-                                        avatar
-                                        spaced="right"
-                                    />
-                                    {currentUser?.displayName}
-                                </span>
-                            }
-                            options={this.dropdownOptions()}
-                        />
-                    </Header>
                 </Grid.Column>
             </Grid>
         );

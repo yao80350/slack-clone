@@ -2,6 +2,7 @@ import React from "react";
 import { Menu } from "semantic-ui-react";
 
 import UserPanel from "../UserPanel/UserPanel";
+import Channels from "../Channels/Channels";
 
 class SidePanel extends React.Component {
     render() {
@@ -14,6 +15,7 @@ class SidePanel extends React.Component {
                 vertical
             >
                 <UserPanel />
+                <Channels />
             </Menu>
         );
     }
