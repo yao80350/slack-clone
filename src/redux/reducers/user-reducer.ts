@@ -1,4 +1,4 @@
-import { ActionTypes, Action } from "../actions";
+import { ActionTypes, UserAction } from "../actions";
 
 export type UserState = {
     currentUser: null | firebase.User;
@@ -10,7 +10,7 @@ const INITIAL_STATE: UserState = {
     isLoading: true,
 };
 
-const userReducer = (state = INITIAL_STATE, action: Action) => {
+const userReducer = (state = INITIAL_STATE, action: UserAction) => {
     switch (action.type) {
         case ActionTypes.SET_USER:
             return {
@@ -20,7 +20,8 @@ const userReducer = (state = INITIAL_STATE, action: Action) => {
             };
         case ActionTypes.CLEAR_USER:
             return {
-                ...INITIAL_STATE,
+                ...state,
+                currentUser: null,
                 isLoading: false,
             };
         default:
