@@ -34,12 +34,20 @@ class Channels extends React.Component<ChannelsProps> {
         this.addListeners();
     }
 
+    componentWillUnmount() {
+        this.removeListeners();
+    }
+
     addListeners = () => {
         const loadedChannels: firebase.database.DataSnapshot[] = [];
         this.state.channelsRef.on("child_added", (snap) => {
             loadedChannels.push(snap.val());
             this.setState({ channels: loadedChannels }, this.setFirstChannel);
         });
+    };
+
+    removeListeners = () => {
+        this.state.channelsRef.off();
     };
 
     changeChannel = (channel: Channel) => {
@@ -60,7 +68,7 @@ class Channels extends React.Component<ChannelsProps> {
     };
 
     displayChannels = () => {
-        this.state.channels.map((channel: Channel) => (
+        return this.state.channels.map((channel: Channel) => (
             <Menu.Item
                 className="item"
                 key={channel.id}
