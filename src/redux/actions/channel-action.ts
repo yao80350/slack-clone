@@ -1,4 +1,4 @@
-import { ActionTypes } from "./";
+import { ActionTypes } from "./types";
 import { Channel } from "../../components/Channels/Channels";
 
 export type ChannelAction = {

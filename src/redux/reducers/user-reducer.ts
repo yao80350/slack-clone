@@ -1,4 +1,5 @@
-import { ActionTypes, UserAction } from "../actions";
+import { ActionTypes } from "../actions/types";
+import { UserAction } from "../actions/user-action";
 
 export type UserState = {
     currentUser: null | firebase.User;

@@ -13,7 +13,7 @@ import Home from "./Home/Home";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 import "../sass/app.scss";
-import { setUser, clearUser } from "../redux/actions";
+import { setUser, clearUser } from "../redux/actions/user-action";
 import { StoreState } from "../redux/reducers";
 import Spinner from "./Spinner/Spinner";
 

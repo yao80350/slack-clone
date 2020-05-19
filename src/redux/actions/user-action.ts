@@ -1,4 +1,4 @@
-import { ActionTypes } from "./";
+import { ActionTypes } from "./types";
 
 export type UserAction = {
     type: ActionTypes;

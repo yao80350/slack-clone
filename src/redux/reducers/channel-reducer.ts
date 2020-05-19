@@ -1,4 +1,5 @@
-import { ChannelAction, ActionTypes } from "../actions";
+import { ActionTypes } from "../actions/types";
+import { ChannelAction } from "../actions/channel-action";
 import { Channel } from "../../components/Channels/Channels";
 
 export type ChannelState = {
