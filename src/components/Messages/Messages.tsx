@@ -19,7 +19,8 @@ export type MessageType = {
         name: string;
         avatar: string;
     };
-    content: string;
+    content?: string;
+    image?: string;
 };
 
 class Messages extends React.Component<MessagesProps> {
