@@ -6,6 +6,7 @@ import MessagesHeader from "../MessagesHeader/MessagesHeader";
 import MessageForm from "../MessageForm/MessageForm";
 import { Channel } from "../Channels/Channels";
 import Message from "../Message/Message";
+import { InputChangeEvent } from "../../type";
 
 type MessagesProps = {
     currentChannel: null | Channel;
@@ -28,6 +29,11 @@ class Messages extends React.Component<MessagesProps> {
         messagesRef: firebase.database().ref("messages"),
         messages: [],
         loading: true,
+        progressBar: false,
+        numUniqueUsers: "",
+        searchTerm: "",
+        searchLoading: false,
+        searchResult: [],
     };
 
     componentDidMount() {
@@ -51,6 +57,7 @@ class Messages extends React.Component<MessagesProps> {
                 loadedMessages.push(snap.val());
                 console.log(this.state.messages);
                 this.setState({ messages: loadedMessages, loading: false });
+                this.countUniqueUsers(loadedMessages);
             });
     };
 
@@ -59,9 +66,10 @@ class Messages extends React.Component<MessagesProps> {
     };
 
     displayMessages = () => {
-        const { messages } = this.state;
+        const { messages, searchResult, searchTerm } = this.state;
         const { currentUser } = this.props;
-        return messages.map((message: MessageType) => (
+        const results = searchTerm ? searchResult : messages;
+        return results.map((message: MessageType) => (
             <Message
                 key={message.timestamp.toString()}
                 message={message}
@@ -70,17 +78,88 @@ class Messages extends React.Component<MessagesProps> {
         ));
     };
 
+    isProgressBarVisible = () => {
+        this.setState({ progressBar: !this.state.progressBar });
+    };
+
+    displayChannleName = () => {
+        const { currentChannel } = this.props;
+        return currentChannel && currentChannel.name;
+    };
+
+    countUniqueUsers = (messages: MessageType[]) => {
+        const uinqueUsers = messages.reduce((acc: string[], message) => {
+            if (!acc.includes(message.user.id)) {
+                acc.push(message.user.id);
+            }
+            return acc;
+        }, []);
+        const numUniqueUsers = `${uinqueUsers.length} ${
+            uinqueUsers.length !== 1 ? "users" : "user"
+        }`;
+        this.setState({ numUniqueUsers });
+    };
+
+    handleSearchChange = (event: InputChangeEvent) => {
+        this.setState(
+            { searchTerm: event.target.value, searchLoading: true },
+            () => {
+                this.handleSearchMessages();
+            }
+        );
+    };
+
+    handleSearchMessages = () => {
+        const { messages, searchTerm } = this.state;
+        const channelMessages = [...messages];
+        const regex = new RegExp(searchTerm, "ig");
+        const searchResult = channelMessages.reduce(
+            (acc: MessageType[], message: MessageType) => {
+                if (
+                    (message.content && message.content.match(regex)) ||
+                    message.user.name.match(regex)
+                ) {
+                    acc.push(message);
+                }
+                return acc;
+            },
+            []
+        );
+        this.setState({ searchResult });
+        setTimeout(() => {
+            this.setState({ searchLoading: false });
+        }, 1000);
+    };
+
     render() {
-        const { messagesRef } = this.state;
+        const {
+            messagesRef,
+            progressBar,
+            numUniqueUsers,
+            searchTerm,
+            searchLoading,
+        } = this.state;
         return (
             <div className="messages">
-                <MessagesHeader />
+                <MessagesHeader
+                    channelName={this.displayChannleName()}
+                    numUniqueUsers={numUniqueUsers}
+                    handleSearchChange={this.handleSearchChange}
+                    searchTerm={searchTerm}
+                    searchLoading={searchLoading}
+                />
 
-                <Segment className="messages__box">
+                <Segment
+                    className={`messages__box ${progressBar && "progressBar"}`}
+                >
                     <Comment.Group>{this.displayMessages()}</Comment.Group>
                 </Segment>
 
-                <MessageForm messagesRef={messagesRef} {...this.props} />
+                <MessageForm
+                    messagesRef={messagesRef}
+                    {...this.props}
+                    isProgressBarVisible={this.isProgressBarVisible}
+                />
             </div>
         );
     }
