@@ -1,0 +1,14 @@
+.messages {
+    height: 100%;
+    &__box {
+        overflow: auto;
+        height: calc(100% - 240px);
+    }
+    .progressBar {
+        height: calc(100% - 270px);
+    }
+}
+
+.progress__bar {
+    margin: 0.3em 0 0 0 !important;
+}

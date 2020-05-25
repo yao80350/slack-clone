@@ -15,4 +15,8 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
+export const getRef = (tableName: string) => {
+    return firebase.database().ref(tableName);
+};
+
 export default firebase;

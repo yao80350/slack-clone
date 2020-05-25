@@ -1,0 +1,10 @@
+.ui.message_form {
+    position: fixed;
+    bottom: 1em;
+    left: 334px;
+    right: 1em;
+    z-index: 1000;
+    &__input {
+        margin-bottom: 0.7em;
+    }
+}
