@@ -15,8 +15,8 @@ type ChannelsProps = {
 export type Channel = {
     id: string;
     name: string;
-    details: string;
-    createdBy: string;
+    details?: string;
+    createdBy?: string;
 };
 
 class Channels extends React.Component<ChannelsProps> {

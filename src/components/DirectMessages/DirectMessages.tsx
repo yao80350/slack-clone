@@ -4,9 +4,15 @@ import { Menu, Icon } from "semantic-ui-react";
 
 import { StoreState } from "../../redux/reducers";
 import { getRef } from "../../firebase";
+import {
+    setCurrentChannel,
+    setPrivateChannle,
+} from "../../redux/actions/channel-action";
 
 type DirectMessagesProps = {
     currentUser: null | firebase.User;
+    setCurrentChannel: typeof setCurrentChannel;
+    setPrivateChannle: typeof setPrivateChannle;
 };
 
 type User = {
@@ -75,6 +81,20 @@ class DirectMessages extends React.Component<DirectMessagesProps> {
 
     isUserOnline = (user: User) => user.status === "online";
 
+    getChannelId = (userId: string) => {
+        const currentUserId = this.props.currentUser?.uid;
+        return currentUserId && userId < currentUserId
+            ? `${userId}/${currentUserId}`
+            : `${currentUserId}/${userId}`;
+    };
+
+    changeChannel = (user: User) => {
+        const { setCurrentChannel, setPrivateChannle } = this.props;
+        const channel = { id: this.getChannelId(user.uid), name: user.name };
+        setCurrentChannel(channel);
+        setPrivateChannle(true);
+    };
+
     render() {
         const { users } = this.state;
         return (
@@ -89,7 +109,7 @@ class DirectMessages extends React.Component<DirectMessagesProps> {
                     <Menu.Item
                         key={user.uid}
                         onClick={() => {
-                            console.log(user);
+                            this.changeChannel(user);
                         }}
                         className="direact__user"
                     >
@@ -109,4 +129,7 @@ const mapStateToProps = ({ user: { currentUser } }: StoreState) => ({
     currentUser,
 });
 
-export default connect(mapStateToProps)(DirectMessages);
+export default connect(mapStateToProps, {
+    setCurrentChannel,
+    setPrivateChannle,
+})(DirectMessages);

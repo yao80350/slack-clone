@@ -14,6 +14,7 @@ type MessageFormProps = {
     currentUser: null | firebase.User;
     currentChannel: null | Channel;
     isProgressBarVisible: () => void;
+    isPrivateChannel: boolean | Channel;
 };
 
 class MessageForm extends React.Component<MessageFormProps> {
@@ -54,7 +55,7 @@ class MessageForm extends React.Component<MessageFormProps> {
 
     sendMessage = async () => {
         const { message } = this.state;
-        const { messagesRef, currentChannel } = this.props;
+        const { currentChannel, messagesRef } = this.props;
         if (message.trim()) {
             this.setState({ loading: true });
             if (!currentChannel) return;
@@ -97,16 +98,25 @@ class MessageForm extends React.Component<MessageFormProps> {
     };
 
     upLoadFile = (file: File, metadata: { contentType: string }) => {
+        const {
+            isProgressBarVisible,
+            currentChannel,
+            isPrivateChannel,
+        } = this.props;
         const arr = file.name.split(".");
         const type = arr[arr.length - 1];
-        const path = `/chat/public/${v4()}.${type}`;
+        const finder = isPrivateChannel
+            ? `private-${currentChannel?.id}`
+            : "public";
+        const path = `/chat/${finder}/${v4()}.${type}`;
         const storageRef = firebase
             .storage()
             .ref()
             .child(path)
             .put(file, metadata);
         this.setState({ uploadState: "uploading" });
-        this.props.isProgressBarVisible();
+        isProgressBarVisible();
+
         storageRef.on(
             "state_changed",
             (snap) => {

@@ -1,6 +1,7 @@
 import React from "react";
 import { Header, Segment, Input, Icon } from "semantic-ui-react";
 import { InputChangeEvent } from "../../type";
+import { Channel } from "../Channels/Channels";
 
 type MessagesHeaderProps = {
     channelName: null | string;
@@ -8,6 +9,7 @@ type MessagesHeaderProps = {
     handleSearchChange: (event: InputChangeEvent) => void;
     searchTerm: string;
     searchLoading: boolean;
+    isPrivateChannel: boolean | Channel;
 };
 
 class MessagesHeader extends React.Component<MessagesHeaderProps> {
@@ -18,6 +20,7 @@ class MessagesHeader extends React.Component<MessagesHeaderProps> {
             handleSearchChange,
             searchTerm,
             searchLoading,
+            isPrivateChannel,
         } = this.props;
         return (
             <Segment clearing>
@@ -25,7 +28,9 @@ class MessagesHeader extends React.Component<MessagesHeaderProps> {
                 <Header className="header" fluid="true" as="h2" floated="left">
                     <span>
                         {channelName}
-                        <Icon name="star outline" color="black" />
+                        {!isPrivateChannel && (
+                            <Icon name="star outline" color="black" />
+                        )}
                     </span>
                     <Header.Subheader>{numUniqueUsers}</Header.Subheader>
                 </Header>
