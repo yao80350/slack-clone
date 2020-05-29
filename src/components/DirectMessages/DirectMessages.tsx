@@ -22,7 +22,7 @@ type User = {
 };
 
 class DirectMessages extends React.Component<DirectMessagesProps> {
-    state = { users: [] };
+    state = { users: [], activeChannel: "" };
 
     componentDidMount = () => {
         const { currentUser } = this.props;
@@ -37,6 +37,7 @@ class DirectMessages extends React.Component<DirectMessagesProps> {
             if (user.uid === userId) {
                 user.status = connected ? "online" : "offline";
             }
+            return user;
         });
         this.setState({ users: updateUsers });
     };
@@ -48,10 +49,13 @@ class DirectMessages extends React.Component<DirectMessagesProps> {
         getRef("users").on("child_added", (snap) => {
             if (currentUserUid !== snap.key) {
                 let user = snap.val();
+
                 user.uid = snap.key;
                 user.status = "offline";
                 loadedUsers.push(user);
-                this.setState({ users: loadedUsers });
+                this.setState({ users: loadedUsers }, () => {
+                    console.log(this.state.users);
+                });
             }
         });
         getRef(".info/connected").on("value", (snap) => {
@@ -88,15 +92,20 @@ class DirectMessages extends React.Component<DirectMessagesProps> {
             : `${currentUserId}/${userId}`;
     };
 
+    setActiveChannel = (userId: string) => {
+        this.setState({ activeChannel: userId });
+    };
+
     changeChannel = (user: User) => {
         const { setCurrentChannel, setPrivateChannle } = this.props;
         const channel = { id: this.getChannelId(user.uid), name: user.name };
         setCurrentChannel(channel);
         setPrivateChannle(true);
+        this.setActiveChannel(user.uid);
     };
 
     render() {
-        const { users } = this.state;
+        const { users, activeChannel } = this.state;
         return (
             <Menu.Menu className="channels">
                 <Menu.Item>
@@ -112,6 +121,7 @@ class DirectMessages extends React.Component<DirectMessagesProps> {
                             this.changeChannel(user);
                         }}
                         className="direact__user"
+                        active={user.uid === activeChannel}
                     >
                         <Icon
                             name="circle"

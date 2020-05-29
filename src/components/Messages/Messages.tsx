@@ -47,7 +47,7 @@ class Messages extends React.Component<MessagesProps> {
 
     componentWillUnmount() {
         const { currentChannel } = this.props;
-        currentChannel && getRef("messages").child(currentChannel.id).off();
+        //currentChannel && getRef("messages").child(currentChannel.id).off();
     }
 
     getMessageRef = () => {
@@ -64,7 +64,6 @@ class Messages extends React.Component<MessagesProps> {
         currentChannel &&
             ref.child(currentChannel.id).on("child_added", (snap) => {
                 loadedMessages.push(snap.val());
-                console.log(this.state.messages);
                 this.setState({ messages: loadedMessages, loading: false });
                 this.countUniqueUsers(loadedMessages);
             });
